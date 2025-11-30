@@ -46,3 +46,52 @@ int main() {
     cout << "Total Cost = " << cost;
     return 0;
 }
+
+b)#include <iostream>
+#include <limits.h>
+using namespace std;
+
+int minKey(int key[], bool mstSet[], int n) {
+    int minVal = INT_MAX, idx = 0;
+    for (int i = 0; i < n; i++)
+        if (!mstSet[i] && key[i] < minVal)
+            minVal = key[i], idx = i;
+    return idx;
+}
+
+int main() {
+    int n = 5;
+    int graph[5][5] = {
+        {0, 2, 0, 6, 0},
+        {2, 0, 3, 8, 5},
+        {0, 3, 0, 0, 7},
+        {6, 8, 0, 0, 9},
+        {0, 5, 7, 9, 0}
+    };
+
+    int parent[5];
+    int key[5];
+    bool mstSet[5];
+
+    for (int i = 0; i < n; i++)
+        key[i] = INT_MAX, mstSet[i] = false;
+
+    key[0] = 0;
+    parent[0] = -1;
+
+    for (int count = 0; count < n - 1; count++) {
+        int u = minKey(key, mstSet, n);
+        mstSet[u] = true;
+
+        for (int v = 0; v < n; v++)
+            if (graph[u][v] && !mstSet[v] && graph[u][v] < key[v])
+                parent[v] = u, key[v] = graph[u][v];
+    }
+
+    cout << "Prim MST edges:\n";
+    for (int i = 1; i < n; i++)
+        cout << parent[i] << " - " << i << endl;
+
+    return 0;
+}
+
